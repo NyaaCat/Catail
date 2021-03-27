@@ -1,0 +1,15 @@
+pluginManagement {
+    repositories {
+        // jcenter()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'catail'
+
+include 'catail-common', 'catail-spigot', 'catail-fabric'
