@@ -2,15 +2,12 @@
   "schemaVersion": 1,
   "id": "catail-fabric",
   "version": "${version}",
-
   "name": "Catail",
   "description": "",
   "authors": [],
   "contact": {},
-
   "license": "MIT",
   "icon": "assets/catail-fabric/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -20,14 +17,12 @@
       "cat.nyaa.catail.MainFabric"
     ]
   },
-
-          "mixins": [
-        "catail-fabric.mixins.json"
-      ],
-    
+  "mixins": [
+    "catail-fabric.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.11.3",
-              "fabric": "*",
-          "minecraft": "1.16.5"
+    "fabric": "*",
+    "minecraft": "1.16.5"
   }
 }

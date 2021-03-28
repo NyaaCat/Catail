@@ -15,7 +15,7 @@ public class PlayerLeftJunctionsEvent {
     public Junctions getJunctions() {
         return junctions;
     }
-    
+
     public Player getPlayer() {
         return player;
     }

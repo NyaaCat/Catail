@@ -9,7 +9,7 @@ public class PlayerStopTravelEvent {
     public PlayerStopTravelEvent(Player player, Junctions junctions) {
         this.player = player;
     }
-    
+
     public Player getPlayer() {
         return player;
     }

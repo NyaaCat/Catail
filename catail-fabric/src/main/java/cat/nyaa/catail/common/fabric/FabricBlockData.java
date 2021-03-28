@@ -33,6 +33,7 @@ public class FabricBlockData implements BlockData {
     @Override
     public String getAsString() {
         DataResult<Tag> tagDataResult = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, blockState);
-        return tagDataResult.getOrThrow(false, (String err) -> {}).asString();
+        return tagDataResult.getOrThrow(false, (String err) -> {
+        }).asString();
     }
 }

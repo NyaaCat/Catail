@@ -21,7 +21,7 @@ public class CommonEventHandler {
         this.routeController = routeController;
     }
 
-    public void handlerPlayerArrivedJunctionsEvent(PlayerArrivedJunctionsEvent event){
+    public void handlerPlayerArrivedJunctionsEvent(PlayerArrivedJunctionsEvent event) {
         Junctions junctions = event.getJunctions();
         Player junctionsPlayer = junctionController.getJunctionsPlayer(junctions);
         if (!Objects.isNull(junctionsPlayer)) {
@@ -45,11 +45,11 @@ public class CommonEventHandler {
         junctionController.resetJunctionState(junctions);
     }
 
-    public void handlerPlayerLeftJunctionsEvent(PlayerLeftJunctionsEvent event){
+    public void handlerPlayerLeftJunctionsEvent(PlayerLeftJunctionsEvent event) {
         leftJunctions(event.getPlayer(), event.getJunctions());
     }
 
-    public void handlerPlayerStopTravel(PlayerStopTravelEvent event){
+    public void handlerPlayerStopTravel(PlayerStopTravelEvent event) {
         Player player = event.getPlayer();
         Junctions junctions = junctionController.getPlayerJunctions(player);
         if (Objects.isNull(junctions)) {

@@ -2,9 +2,7 @@ package cat.nyaa.catail.common.fabric;
 
 import cat.nyaa.catail.common.Location;
 import cat.nyaa.catail.common.Player;
-import cat.nyaa.catail.common.Route;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 
 import java.util.Map;
 import java.util.UUID;

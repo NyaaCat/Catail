@@ -36,6 +36,6 @@ public class FabricBlock implements Block {
 
     @Override
     public void setState(BlockData state) {
-        world.setBlockState(pos, ((FabricBlockData)state).getBlockState());
+        world.setBlockState(pos, ((FabricBlockData) state).getBlockState());
     }
 }

@@ -6,8 +6,11 @@ import java.util.Map;
 
 public interface Route extends IdNamed {
     List<Route> getSubRoute();
+
     Map<Station, Track> getDepartureTracks();
+
     Map<Station, Track> getDestinationTracks();
+
     LinkedHashMap<Junctions, String> getRequiredJunctionState();
 
     default String getJunctionState(Junctions junction) {

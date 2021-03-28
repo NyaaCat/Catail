@@ -3,7 +3,6 @@ package cat.nyaa.catail.common.fabric;
 import cat.nyaa.catail.common.BlockType;
 import cat.nyaa.catail.common.Identifier;
 import net.minecraft.block.Block;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Map;
