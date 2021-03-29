@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class FabricBlock implements Block {
+
     private final BlockPos pos;
     private final World world;
 

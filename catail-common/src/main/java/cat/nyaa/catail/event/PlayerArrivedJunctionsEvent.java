@@ -4,6 +4,7 @@ import cat.nyaa.catail.common.Junctions;
 import cat.nyaa.catail.common.Player;
 
 public class PlayerArrivedJunctionsEvent {
+
     private final Player player;
     private final Junctions junctions;
 

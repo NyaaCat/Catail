@@ -8,7 +8,5 @@ import net.fabricmc.api.Environment;
 public class MainFabricClient implements ClientModInitializer {
 
     @Override
-    public void onInitializeClient() {
-
-    }
+    public void onInitializeClient() {}
 }

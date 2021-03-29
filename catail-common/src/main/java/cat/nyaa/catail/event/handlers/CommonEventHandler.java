@@ -8,11 +8,11 @@ import cat.nyaa.catail.controller.RouteController;
 import cat.nyaa.catail.event.PlayerArrivedJunctionsEvent;
 import cat.nyaa.catail.event.PlayerLeftJunctionsEvent;
 import cat.nyaa.catail.event.PlayerStopTravelEvent;
-
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
 
 public class CommonEventHandler {
+
     private final JunctionController junctionController;
     private final RouteController routeController;
 

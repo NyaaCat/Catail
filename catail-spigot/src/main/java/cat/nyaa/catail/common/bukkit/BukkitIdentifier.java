@@ -1,12 +1,12 @@
 package cat.nyaa.catail.common.bukkit;
 
 import cat.nyaa.catail.common.Identifier;
-import org.bukkit.NamespacedKey;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.NamespacedKey;
 
 public class BukkitIdentifier implements Identifier {
+
     private final NamespacedKey namespacedKey;
     private static final Map<NamespacedKey, BukkitIdentifier> cache = new ConcurrentHashMap<>();
 
@@ -18,7 +18,6 @@ public class BukkitIdentifier implements Identifier {
         this.namespacedKey = namespacedKey;
     }
 
-
     @Override
     public String getNamespace() {
         return namespacedKey.getNamespace();
@@ -29,4 +28,3 @@ public class BukkitIdentifier implements Identifier {
         return namespacedKey.getKey();
     }
 }
-

@@ -4,18 +4,19 @@ import cat.nyaa.catail.common.Location;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import java.util.concurrent.ExecutionException;
 
 public class BukkitLocation implements Location {
-    org.bukkit.Location location;
 
-    private static final CacheLoader<org.bukkit.Location, Location> loader = new CacheLoader<org.bukkit.Location, Location>() {
+    private static final CacheLoader<org.bukkit.Location, Location> loader = new CacheLoader<>() {
         public Location load(org.bukkit.Location key) {
             return new BukkitLocation(key);
         }
     };
-    private static final LoadingCache<org.bukkit.Location, Location> cache = CacheBuilder.newBuilder().maximumSize(8192).build(loader);
+    private static final LoadingCache<org.bukkit.Location, Location> cache = CacheBuilder
+        .newBuilder()
+        .maximumSize(8192)
+        .build(loader);
 
     public static Location get(org.bukkit.Location location) {
         try {
@@ -24,6 +25,8 @@ public class BukkitLocation implements Location {
             throw new RuntimeException(e);
         }
     }
+
+    private final org.bukkit.Location location;
 
     protected BukkitLocation(org.bukkit.Location location) {
         this.location = location;

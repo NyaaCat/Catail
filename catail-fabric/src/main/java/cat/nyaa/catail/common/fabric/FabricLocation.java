@@ -4,18 +4,21 @@ import cat.nyaa.catail.common.Location;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.concurrent.ExecutionException;
 import net.minecraft.util.math.Position;
 
-import java.util.concurrent.ExecutionException;
-
 public class FabricLocation implements Location {
-    private final Position position;
-    private static final CacheLoader<Position, Location> loader = new CacheLoader<Position, Location>() {
+
+    private static final CacheLoader<Position, Location> loader = new CacheLoader<>() {
         public Location load(Position key) {
             return new FabricLocation(key);
         }
     };
-    private static final LoadingCache<Position, Location> cache = CacheBuilder.newBuilder().maximumSize(8192).build(loader);
+
+    private static final LoadingCache<Position, Location> cache = CacheBuilder
+        .newBuilder()
+        .maximumSize(8192)
+        .build(loader);
 
     public static Location get(Position position) {
         try {
@@ -24,6 +27,8 @@ public class FabricLocation implements Location {
             throw new RuntimeException(e);
         }
     }
+
+    private final Position position;
 
     protected FabricLocation(Position position) {
         this.position = position;

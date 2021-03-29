@@ -2,20 +2,20 @@ package cat.nyaa.catail.common.fabric;
 
 import cat.nyaa.catail.common.Location;
 import cat.nyaa.catail.common.Player;
-import net.minecraft.entity.player.PlayerEntity;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class FabricPlayer implements Player {
-    private final PlayerEntity player;
 
     private static final Map<PlayerEntity, FabricPlayer> cache = new ConcurrentHashMap<>();
 
     public static Player get(PlayerEntity player) {
         return cache.computeIfAbsent(player, FabricPlayer::new);
     }
+
+    private final PlayerEntity player;
 
     protected FabricPlayer(PlayerEntity player) {
         this.player = player;

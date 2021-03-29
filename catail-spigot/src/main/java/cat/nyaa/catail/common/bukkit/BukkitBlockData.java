@@ -4,6 +4,7 @@ import cat.nyaa.catail.common.BlockData;
 import cat.nyaa.catail.common.BlockType;
 
 public class BukkitBlockData implements BlockData {
+
     private final org.bukkit.block.data.BlockData blockData;
     private final String name;
 

@@ -4,12 +4,12 @@ import cat.nyaa.catail.common.BlockGroupState;
 import cat.nyaa.catail.common.Junctions;
 import cat.nyaa.catail.common.Player;
 import cat.nyaa.catail.common.Route;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class JunctionController {
+
     Map<Player, Junctions> playerJunctionsMap = new HashMap<>();
     Map<Junctions, Player> junctionsPlayerMap = new HashMap<>();
 
@@ -29,7 +29,9 @@ public class JunctionController {
     public void setJunctionStateByRoute(Junctions junction, Route route) {
         String state = route.getJunctionState(junction);
         if (Objects.isNull(state)) {
-            throw new IllegalStateException(String.format("Junctions State %s not found in %s", junction.getId(), route.getId()));
+            throw new IllegalStateException(
+                String.format("Junctions State %s not found in %s", junction.getId(), route.getId())
+            );
         }
         setJunctionState(junction, state);
     }

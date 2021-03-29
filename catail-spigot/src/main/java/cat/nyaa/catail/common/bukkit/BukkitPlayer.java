@@ -2,13 +2,11 @@ package cat.nyaa.catail.common.bukkit;
 
 import cat.nyaa.catail.common.Location;
 import cat.nyaa.catail.common.Player;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BukkitPlayer implements Player {
-    private final org.bukkit.entity.Player player;
 
     private static final Map<org.bukkit.entity.Player, BukkitPlayer> cache = new ConcurrentHashMap<>();
 
@@ -19,6 +17,8 @@ public class BukkitPlayer implements Player {
     protected BukkitPlayer(org.bukkit.entity.Player player) {
         this.player = player;
     }
+
+    private final org.bukkit.entity.Player player;
 
     @Override
     public UUID getUuid() {
