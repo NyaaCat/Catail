@@ -2,6 +2,7 @@ package cat.nyaa.catail.common.fabric;
 
 import cat.nyaa.catail.common.Block;
 import cat.nyaa.catail.common.BlockData;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -37,6 +38,16 @@ public class FabricBlock implements Block {
 
     @Override
     public void setState(BlockData state) {
-        world.setBlockState(pos, ((FabricBlockData) state).getBlockState());
+        BlockState blockState = world.getBlockState(pos);
+        ((FabricBlockData) state).getConsumer().accept(blockState);
+        world.setBlockState(pos, blockState);
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public BlockState getBlockState() {
+        return world.getBlockState(pos);
     }
 }

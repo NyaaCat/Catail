@@ -4,6 +4,7 @@ import cat.nyaa.catail.common.Block;
 import cat.nyaa.catail.common.BlockData;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.block.BlockState;
 
 public class BukkitBlock implements Block {
 
@@ -42,5 +43,9 @@ public class BukkitBlock implements Block {
     @Override
     public void setState(BlockData state) {
         block.setBlockData(((BukkitBlockData) state).getBlockData());
+    }
+
+    public BlockState getBlockState() {
+        return block.getState();
     }
 }

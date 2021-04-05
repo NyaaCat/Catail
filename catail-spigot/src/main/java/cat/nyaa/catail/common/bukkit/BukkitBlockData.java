@@ -8,13 +8,9 @@ public class BukkitBlockData implements BlockData {
     private final org.bukkit.block.data.BlockData blockData;
     private final String name;
 
-    public BukkitBlockData(org.bukkit.block.data.BlockData blockData, String name) {
+    public BukkitBlockData(String name, org.bukkit.block.data.BlockData blockData) {
         this.blockData = blockData;
         this.name = name;
-    }
-
-    public org.bukkit.block.data.BlockData getBlockData() {
-        return blockData;
     }
 
     @Override
@@ -30,5 +26,9 @@ public class BukkitBlockData implements BlockData {
     @Override
     public String getAsString() {
         return blockData.getAsString();
+    }
+
+    public org.bukkit.block.data.BlockData getBlockData() {
+        return blockData;
     }
 }
