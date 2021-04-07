@@ -42,7 +42,7 @@ public class BukkitBlock implements Block {
 
     @Override
     public void setState(BlockData state) {
-        block.setBlockData(((BukkitBlockData) state).getBlockData());
+        block.setBlockData(block.getBlockData().merge(((BukkitBlockData) state).getBlockData()));
     }
 
     public BlockState getBlockState() {

@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 public class BukkitLocation implements Location {
 
-    private static final CacheLoader<org.bukkit.Location, Location> loader = new CacheLoader<>() {
+    private static final CacheLoader<org.bukkit.Location, Location> loader = new CacheLoader<org.bukkit.Location, Location>() {
         public Location load(org.bukkit.Location key) {
             return new BukkitLocation(key);
         }

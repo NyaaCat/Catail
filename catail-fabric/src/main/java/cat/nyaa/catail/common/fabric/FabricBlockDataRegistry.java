@@ -12,16 +12,17 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.enums.ComparatorMode;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class FabricBlockDataRegistry implements BlockDataRegistry {
 
-    private static final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<>() {
+    private static final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<Identifier, Collection<FabricBlockData>>() {
         {
             this.put(
                     Registry.BLOCK.getId(LEVER),
-                    new HashSet<>() {
+                    new HashSet<FabricBlockData>() {
                         {
                             this.add(
                                     new FabricBlockData(
@@ -44,7 +45,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Registry.BLOCK.getId(REPEATER),
-                    new HashSet<>() {
+                    new HashSet<FabricBlockData>() {
                         {
                             for (int delay : RepeaterBlock.DELAY.getValues()) {
                                 this.add(
@@ -55,7 +56,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                                                 blockState
                                                     .with(RepeaterBlock.DELAY, delay)
                                                     .with(RepeaterBlock.LOCKED, false),
-                                            new HashSet<>() {
+                                            new HashSet<Property<?>>() {
                                                 {
                                                     this.add(RepeaterBlock.DELAY);
                                                     this.add(RepeaterBlock.LOCKED);
@@ -71,7 +72,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                                                 blockState
                                                     .with(RepeaterBlock.DELAY, delay)
                                                     .with(RepeaterBlock.LOCKED, true),
-                                            new HashSet<>() {
+                                            new HashSet<Property<?>>() {
                                                 {
                                                     this.add(RepeaterBlock.DELAY);
                                                     this.add(RepeaterBlock.LOCKED);
@@ -85,7 +86,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Registry.BLOCK.getId(COMPARATOR),
-                    new HashSet<>() {
+                    new HashSet<FabricBlockData>() {
                         {
                             for (ComparatorMode mode : ComparatorBlock.MODE.getValues()) {
                                 this.add(
@@ -104,7 +105,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
     };
 
     @Override
-    public BlockData Match(Block commonBlock) {
+    public BlockData match(Block commonBlock) {
         FabricBlock block = (FabricBlock) commonBlock;
         BlockState blockState = block.getBlockState();
         Identifier id = Registry.BLOCK.getId(blockState.getBlock());
@@ -118,7 +119,11 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 knownState
                     .getProperties()
                     .stream()
-                    .allMatch(property -> Objects.nonNull(blockState.get(property)) && blockState.get(property).equals(state.get(property)))
+                    .allMatch(
+                        property ->
+                            Objects.nonNull(blockState.get(property)) &&
+                            blockState.get(property).equals(state.get(property))
+                    )
             ) {
                 return knownState;
             }

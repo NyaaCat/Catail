@@ -16,32 +16,24 @@ import org.bukkit.block.data.type.Switch;
 
 public class BukkitBlockDataRegistry implements BlockDataRegistry {
 
-    private static final Map<NamespacedKey, Collection<BukkitBlockData>> registry = new ConcurrentHashMap<>() {
+    private static final BukkitBlockDataRegistry instance = new BukkitBlockDataRegistry();
+
+    private final Map<NamespacedKey, Collection<BukkitBlockData>> registry = new ConcurrentHashMap<NamespacedKey, Collection<BukkitBlockData>>() {
         {
             this.put(
                     Material.LEVER.getKey(),
-                    new HashSet<>() {
+                    new HashSet<BukkitBlockData>() {
                         {
                             this.add(
                                     new BukkitBlockData(
                                         "minecraft:lever[powered=true]",
-                                        Bukkit
-                                            .getServer()
-                                            .createBlockData(
-                                                Material.LEVER,
-                                                blockData -> ((Switch) blockData).setPowered(true)
-                                            )
+                                        Bukkit.getServer().createBlockData("minecraft:lever[powered=true]")
                                     )
                                 );
                             this.add(
                                     new BukkitBlockData(
                                         "minecraft:lever[powered=false]",
-                                        Bukkit
-                                            .getServer()
-                                            .createBlockData(
-                                                Material.LEVER,
-                                                blockData -> ((Switch) blockData).setPowered(false)
-                                            )
+                                        Bukkit.getServer().createBlockData("minecraft:lever[powered=false]")
                                     )
                                 );
                         }
@@ -49,37 +41,24 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Material.REPEATER.getKey(),
-                    new HashSet<>() {
+                    new HashSet<BukkitBlockData>() {
                         {
                             Repeater repeaterData = (Repeater) Bukkit.getServer().createBlockData(Material.REPEATER);
                             for (int i = repeaterData.getMinimumDelay(); i <= repeaterData.getMaximumDelay(); i++) {
-                                int delay = i;
                                 this.add(
                                         new BukkitBlockData(
-                                            "minecraft:repeater[delay=" + delay + ",locked=false]",
+                                            "minecraft:repeater[delay=" + i + ",locked=false]",
                                             Bukkit
                                                 .getServer()
-                                                .createBlockData(
-                                                    Material.REPEATER,
-                                                    blockData -> {
-                                                        ((Repeater) blockData).setDelay(delay);
-                                                        ((Repeater) blockData).setLocked(false);
-                                                    }
-                                                )
+                                                .createBlockData("minecraft:repeater[delay=" + i + ",locked=false]")
                                         )
                                     );
                                 this.add(
                                         new BukkitBlockData(
-                                            "minecraft:repeater[delay=" + delay + ",locked=true]",
+                                            "minecraft:repeater[delay=" + i + ",locked=true]",
                                             Bukkit
                                                 .getServer()
-                                                .createBlockData(
-                                                    Material.REPEATER,
-                                                    blockData -> {
-                                                        ((Repeater) blockData).setDelay(delay);
-                                                        ((Repeater) blockData).setLocked(true);
-                                                    }
-                                                )
+                                                .createBlockData("minecraft:repeater[delay=" + i + ",locked=true]")
                                         )
                                     );
                             }
@@ -88,7 +67,7 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Material.COMPARATOR.getKey(),
-                    new HashSet<>() {
+                    new HashSet<BukkitBlockData>() {
                         {
                             for (Comparator.Mode mode : Comparator.Mode.values()) {
                                 this.add(
@@ -97,8 +76,9 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                                             Bukkit
                                                 .getServer()
                                                 .createBlockData(
-                                                    Material.COMPARATOR,
-                                                    blockData -> ((Comparator) blockData).setMode(mode)
+                                                    "minecraft:comparator[mode=" +
+                                                    mode.name().toLowerCase(Locale.ROOT) +
+                                                    "]"
                                                 )
                                         )
                                     );
@@ -108,7 +88,8 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 );
         }
     };
-    private static final Map<NamespacedKey, BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean>> matchers = new ConcurrentHashMap<>() {
+
+    private final Map<NamespacedKey, BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean>> matchers = new ConcurrentHashMap<NamespacedKey, BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean>>() {
         {
             this.put(Material.LEVER.getKey(), BukkitBlockDataRegistry::LeverMatcher);
             this.put(Material.REPEATER.getKey(), BukkitBlockDataRegistry::RepeaterMatcher);
@@ -116,8 +97,22 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
         }
     };
 
+    public static BukkitBlockDataRegistry getInstance() {
+        return BukkitBlockDataRegistry.instance;
+    }
+
+    public BlockData get(NamespacedKey key, String name) {
+        Collection<BukkitBlockData> blockData = registry.get(key);
+        if (Objects.isNull(blockData)) {
+            return null;
+        }
+        return blockData.stream().filter(d -> d.getStateName().equals(name)).findFirst().orElse(null);
+    }
+
+    protected BukkitBlockDataRegistry() {}
+
     @Override
-    public BlockData Match(Block commonBlock) {
+    public BlockData match(Block commonBlock) {
         BukkitBlock block = (BukkitBlock) commonBlock;
         BlockState blockState = block.getBlockState();
         NamespacedKey id = blockState.getBlockData().getMaterial().getKey();

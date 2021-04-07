@@ -9,7 +9,7 @@ import net.minecraft.util.math.Position;
 
 public class FabricLocation implements Location {
 
-    private static final CacheLoader<Position, Location> loader = new CacheLoader<>() {
+    private static final CacheLoader<Position, Location> loader = new CacheLoader<Position, Location>() {
         public Location load(Position key) {
             return new FabricLocation(key);
         }
