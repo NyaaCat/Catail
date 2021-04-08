@@ -2,11 +2,21 @@ package cat.nyaa.catail.common.fabric;
 
 import cat.nyaa.catail.common.Block;
 import cat.nyaa.catail.common.BlockData;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class FabricBlock implements Block {
+
+    private static final Map<BlockPos, Map<World, FabricBlock>> cache = new ConcurrentHashMap<>();
+
+    public static FabricBlock get(World world, BlockPos pos) {
+        return cache
+            .computeIfAbsent(pos, p -> new ConcurrentHashMap<>())
+            .computeIfAbsent(world, w -> new FabricBlock(w, pos));
+    }
 
     private final BlockPos pos;
     private final World world;
@@ -18,7 +28,7 @@ public class FabricBlock implements Block {
 
     @Override
     public BlockData getState() {
-        throw new IllegalStateException();
+        return FabricBlockDataRegistry.getInstance().match(this);
     }
 
     @Override
@@ -39,8 +49,8 @@ public class FabricBlock implements Block {
     @Override
     public void setState(BlockData state) {
         BlockState blockState = world.getBlockState(pos);
-        ((FabricBlockData) state).getConsumer().accept(blockState);
-        world.setBlockState(pos, blockState);
+        BlockState newBlockState = ((FabricBlockData) state).getConsumer().apply(blockState);
+        world.setBlockState(pos, newBlockState);
     }
 
     public World getWorld() {

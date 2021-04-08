@@ -18,6 +18,10 @@ public class BukkitIdentifier implements Identifier {
         this.namespacedKey = namespacedKey;
     }
 
+    public NamespacedKey getNamespacedKey() {
+        return this.namespacedKey;
+    }
+
     @Override
     public String getNamespace() {
         return namespacedKey.getNamespace();

@@ -18,6 +18,10 @@ public class FabricIdentifier implements Identifier {
         this.identifier = identifier;
     }
 
+    public net.minecraft.util.Identifier getIdentifier() {
+        return this.identifier;
+    }
+
     @Override
     public String getNamespace() {
         return identifier.getNamespace();

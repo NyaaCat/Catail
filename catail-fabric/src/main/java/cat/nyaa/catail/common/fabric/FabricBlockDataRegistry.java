@@ -18,7 +18,9 @@ import net.minecraft.util.registry.Registry;
 
 public class FabricBlockDataRegistry implements BlockDataRegistry {
 
-    private static final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<Identifier, Collection<FabricBlockData>>() {
+    private static final FabricBlockDataRegistry instance = new FabricBlockDataRegistry();
+
+    private final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<Identifier, Collection<FabricBlockData>>() {
         {
             this.put(
                     Registry.BLOCK.getId(LEVER),
@@ -103,6 +105,21 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 );
         }
     };
+
+    public static FabricBlockDataRegistry getInstance() {
+        return FabricBlockDataRegistry.instance;
+    }
+
+    protected FabricBlockDataRegistry() {}
+
+    @Override
+    public BlockData get(cat.nyaa.catail.common.Identifier key, String name) {
+        Collection<FabricBlockData> blockData = registry.get(((FabricIdentifier) key).getIdentifier());
+        if (Objects.isNull(blockData)) {
+            return null;
+        }
+        return blockData.stream().filter(d -> d.getStateName().equals(name)).findFirst().orElse(null);
+    }
 
     @Override
     public BlockData match(Block commonBlock) {

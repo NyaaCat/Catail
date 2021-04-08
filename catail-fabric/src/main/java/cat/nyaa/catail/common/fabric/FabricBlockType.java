@@ -25,4 +25,8 @@ public class FabricBlockType implements BlockType {
     public Identifier getIdentifier() {
         return FabricIdentifier.get(Registry.BLOCK.getId(block));
     }
+
+    public Block getBlock() {
+        return block;
+    }
 }

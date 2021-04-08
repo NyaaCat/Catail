@@ -3,6 +3,7 @@ package cat.nyaa.catail.common.bukkit;
 import cat.nyaa.catail.common.Block;
 import cat.nyaa.catail.common.BlockData;
 import cat.nyaa.catail.common.BlockDataRegistry;
+import cat.nyaa.catail.common.Identifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -101,15 +102,16 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
         return BukkitBlockDataRegistry.instance;
     }
 
-    public BlockData get(NamespacedKey key, String name) {
-        Collection<BukkitBlockData> blockData = registry.get(key);
+    protected BukkitBlockDataRegistry() {}
+
+    @Override
+    public BlockData get(Identifier key, String name) {
+        Collection<BukkitBlockData> blockData = registry.get(((BukkitIdentifier) key).getNamespacedKey());
         if (Objects.isNull(blockData)) {
             return null;
         }
         return blockData.stream().filter(d -> d.getStateName().equals(name)).findFirst().orElse(null);
     }
-
-    protected BukkitBlockDataRegistry() {}
 
     @Override
     public BlockData match(Block commonBlock) {

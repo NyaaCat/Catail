@@ -3,6 +3,7 @@ package cat.nyaa.catail;
 import cat.nyaa.catail.common.BlockData;
 import cat.nyaa.catail.common.bukkit.BukkitBlock;
 import cat.nyaa.catail.common.bukkit.BukkitBlockDataRegistry;
+import cat.nyaa.catail.common.bukkit.BukkitIdentifier;
 import java.util.Objects;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -40,7 +41,10 @@ public final class MainSpigot extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, blockData.getAsString());
         }
         if (clickedBlock.getBlockData().getMaterial().equals(Material.LEVER)) {
-            BlockData data = instance.get(Material.LEVER.getKey(), "minecraft:lever[powered=false]");
+            BlockData data = instance.get(
+                BukkitIdentifier.get(Material.LEVER.getKey()),
+                "minecraft:lever[powered=false]"
+            );
             bukkitBlock.setState(data);
         }
     }

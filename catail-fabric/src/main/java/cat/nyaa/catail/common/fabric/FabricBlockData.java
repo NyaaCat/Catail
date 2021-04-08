@@ -4,7 +4,7 @@ import cat.nyaa.catail.common.BlockData;
 import cat.nyaa.catail.common.BlockType;
 import com.mojang.serialization.DataResult;
 import java.util.Collection;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -13,21 +13,20 @@ import net.minecraft.state.property.Property;
 public class FabricBlockData implements BlockData {
 
     private final String name;
-    private final Consumer<BlockState> consumer;
+    private final Function<BlockState, BlockState> consumer;
     private final BlockState blockState;
     private final Collection<Property<?>> properties;
 
     protected FabricBlockData(
         String name,
         BlockState blockState,
-        Consumer<BlockState> consumer,
+        Function<BlockState, BlockState> consumer,
         Collection<Property<?>> properties
     ) {
         this.name = name;
         this.consumer = consumer;
         this.properties = properties;
-        consumer.accept(blockState);
-        this.blockState = blockState;
+        this.blockState = consumer.apply(blockState);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class FabricBlockData implements BlockData {
         return tagDataResult.getOrThrow(false, (String err) -> {}).asString();
     }
 
-    public Consumer<BlockState> getConsumer() {
+    public Function<BlockState, BlockState> getConsumer() {
         return consumer;
     }
 
