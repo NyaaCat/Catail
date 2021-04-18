@@ -12,6 +12,10 @@ public class FabricIdentifier implements Identifier {
         return cache.computeIfAbsent(identifier, FabricIdentifier::new);
     }
 
+    public static Identifier get(String namespace, String key) {
+        return get(new net.minecraft.util.Identifier(namespace, key));
+    }
+
     private final net.minecraft.util.Identifier identifier;
 
     protected FabricIdentifier(net.minecraft.util.Identifier identifier) {

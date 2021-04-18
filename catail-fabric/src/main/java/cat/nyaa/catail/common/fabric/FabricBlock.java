@@ -49,7 +49,7 @@ public class FabricBlock implements Block {
     @Override
     public void setState(BlockData state) {
         BlockState blockState = world.getBlockState(pos);
-        BlockState newBlockState = ((FabricBlockData) state).getConsumer().apply(blockState);
+        BlockState newBlockState = ((FabricBlockData) state).getTransformer().apply(blockState);
         world.setBlockState(pos, newBlockState);
     }
 

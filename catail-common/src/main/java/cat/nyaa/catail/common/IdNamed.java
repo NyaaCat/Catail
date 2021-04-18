@@ -1,7 +1,9 @@
 package cat.nyaa.catail.common;
 
-public interface IdNamed {
-    String getId();
+import java.util.Locale;
 
-    String getName();
+public interface IdNamed {
+    Identifier getId();
+
+    String getName(Locale locale);
 }

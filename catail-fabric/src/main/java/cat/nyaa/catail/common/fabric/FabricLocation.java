@@ -5,22 +5,31 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.util.concurrent.ExecutionException;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
 
 public class FabricLocation implements Location {
 
-    private static final CacheLoader<Position, Location> loader = new CacheLoader<Position, Location>() {
-        public Location load(Position key) {
+    private static final CacheLoader<BlockPos, Location> loader = new CacheLoader<BlockPos, Location>() {
+        public Location load(BlockPos key) {
             return new FabricLocation(key);
         }
     };
 
-    private static final LoadingCache<Position, Location> cache = CacheBuilder
+    private static final LoadingCache<BlockPos, Location> cache = CacheBuilder
         .newBuilder()
         .maximumSize(8192)
         .build(loader);
 
     public static Location get(Position position) {
+        try {
+            return cache.get(new BlockPos(position));
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Location get(BlockPos position) {
         try {
             return cache.get(position);
         } catch (ExecutionException e) {
@@ -28,9 +37,9 @@ public class FabricLocation implements Location {
         }
     }
 
-    private final Position position;
+    private final BlockPos position;
 
-    protected FabricLocation(Position position) {
+    protected FabricLocation(BlockPos position) {
         this.position = position;
     }
 

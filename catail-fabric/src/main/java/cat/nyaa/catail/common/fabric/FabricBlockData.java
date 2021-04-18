@@ -13,20 +13,20 @@ import net.minecraft.state.property.Property;
 public class FabricBlockData implements BlockData {
 
     private final String name;
-    private final Function<BlockState, BlockState> consumer;
+    private final Function<BlockState, BlockState> transformer;
     private final BlockState blockState;
     private final Collection<Property<?>> properties;
 
     protected FabricBlockData(
         String name,
         BlockState blockState,
-        Function<BlockState, BlockState> consumer,
+        Function<BlockState, BlockState> transformer,
         Collection<Property<?>> properties
     ) {
         this.name = name;
-        this.consumer = consumer;
+        this.transformer = transformer;
         this.properties = properties;
-        this.blockState = consumer.apply(blockState);
+        this.blockState = transformer.apply(blockState);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class FabricBlockData implements BlockData {
         return tagDataResult.getOrThrow(false, (String err) -> {}).asString();
     }
 
-    public Function<BlockState, BlockState> getConsumer() {
-        return consumer;
+    public Function<BlockState, BlockState> getTransformer() {
+        return transformer;
     }
 
     public Collection<Property<?>> getProperties() {
