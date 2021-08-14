@@ -41,7 +41,11 @@ public class MainFabric implements ModInitializer {
                         "area" +
                         Objects
                             .requireNonNull(
-                                w.getServer().getRegistryManager().getDimensionTypes().getId(w.getDimension())
+                                w
+                                    .getServer()
+                                    .getRegistryManager()
+                                    .get(Registry.DIMENSION_TYPE_KEY)
+                                    .getId(w.getDimension())
                             )
                             .getPath()
                     ),
@@ -54,7 +58,11 @@ public class MainFabric implements ModInitializer {
                         " " +
                         Objects
                             .requireNonNull(
-                                w.getServer().getRegistryManager().getDimensionTypes().getId(w.getDimension())
+                                w
+                                    .getServer()
+                                    .getRegistryManager()
+                                    .get(Registry.DIMENSION_TYPE_KEY)
+                                    .getId(w.getDimension())
                             )
                             .getPath()
                     ),

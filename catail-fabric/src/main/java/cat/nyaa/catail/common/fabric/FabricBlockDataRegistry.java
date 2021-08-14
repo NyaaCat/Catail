@@ -12,7 +12,6 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.enums.ComparatorMode;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -20,11 +19,11 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
 
     private static final FabricBlockDataRegistry instance = new FabricBlockDataRegistry();
 
-    private final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<Identifier, Collection<FabricBlockData>>() {
+    private final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<>() {
         {
             this.put(
                     Registry.BLOCK.getId(LEVER),
-                    new HashSet<FabricBlockData>() {
+                    new HashSet<>() {
                         {
                             this.add(
                                     new FabricBlockData(
@@ -47,7 +46,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Registry.BLOCK.getId(REPEATER),
-                    new HashSet<FabricBlockData>() {
+                    new HashSet<>() {
                         {
                             for (int delay : RepeaterBlock.DELAY.getValues()) {
                                 this.add(
@@ -58,7 +57,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                                                 blockState
                                                     .with(RepeaterBlock.DELAY, delay)
                                                     .with(RepeaterBlock.LOCKED, false),
-                                            new HashSet<Property<?>>() {
+                                            new HashSet<>() {
                                                 {
                                                     this.add(RepeaterBlock.DELAY);
                                                     this.add(RepeaterBlock.LOCKED);
@@ -74,7 +73,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                                                 blockState
                                                     .with(RepeaterBlock.DELAY, delay)
                                                     .with(RepeaterBlock.LOCKED, true),
-                                            new HashSet<Property<?>>() {
+                                            new HashSet<>() {
                                                 {
                                                     this.add(RepeaterBlock.DELAY);
                                                     this.add(RepeaterBlock.LOCKED);
@@ -88,7 +87,7 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 );
             this.put(
                     Registry.BLOCK.getId(COMPARATOR),
-                    new HashSet<FabricBlockData>() {
+                    new HashSet<>() {
                         {
                             for (ComparatorMode mode : ComparatorBlock.MODE.getValues()) {
                                 this.add(
