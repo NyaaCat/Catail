@@ -6,7 +6,10 @@ import cat.nyaa.catail.common.BlockDataRegistry;
 import cat.nyaa.catail.common.Identifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,84 +22,76 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
 
     private static final BukkitBlockDataRegistry instance = new BukkitBlockDataRegistry();
 
-    private final Map<NamespacedKey, Collection<BukkitBlockData>> registry = new ConcurrentHashMap<NamespacedKey, Collection<BukkitBlockData>>() {
-        {
-            this.put(
-                    Material.LEVER.getKey(),
-                    new HashSet<BukkitBlockData>() {
-                        {
-                            this.add(
-                                    new BukkitBlockData(
-                                        "minecraft:lever[powered=true]",
-                                        Bukkit.getServer().createBlockData("minecraft:lever[powered=true]")
-                                    )
-                                );
-                            this.add(
-                                    new BukkitBlockData(
-                                        "minecraft:lever[powered=false]",
-                                        Bukkit.getServer().createBlockData("minecraft:lever[powered=false]")
-                                    )
-                                );
-                        }
-                    }
-                );
-            this.put(
-                    Material.REPEATER.getKey(),
-                    new HashSet<BukkitBlockData>() {
-                        {
-                            Repeater repeaterData = (Repeater) Bukkit.getServer().createBlockData(Material.REPEATER);
+    private final Map<NamespacedKey, Collection<BukkitBlockData>> registry = new ConcurrentHashMap<>(
+        Map.ofEntries(
+            Map.entry(
+                Material.LEVER.getKey(),
+                Set.of(
+                    new BukkitBlockData(
+                        "minecraft:lever[powered=true]",
+                        Bukkit.getServer().createBlockData("minecraft:lever[powered=true]")
+                    ),
+                    new BukkitBlockData(
+                        "minecraft:lever[powered=false]",
+                        Bukkit.getServer().createBlockData("minecraft:lever[powered=false]")
+                    )
+                )
+            ),
+            Map.entry(
+                Material.REPEATER.getKey(),
+                Stream
+                    .of((Repeater) Bukkit.getServer().createBlockData(Material.REPEATER))
+                    .mapMulti(
+                        (Repeater repeaterData, Consumer<BukkitBlockData> commit) -> {
                             for (int i = repeaterData.getMinimumDelay(); i <= repeaterData.getMaximumDelay(); i++) {
-                                this.add(
-                                        new BukkitBlockData(
-                                            "minecraft:repeater[delay=" + i + ",locked=false]",
-                                            Bukkit
-                                                .getServer()
-                                                .createBlockData("minecraft:repeater[delay=" + i + ",locked=false]")
-                                        )
-                                    );
-                                this.add(
-                                        new BukkitBlockData(
-                                            "minecraft:repeater[delay=" + i + ",locked=true]",
-                                            Bukkit
-                                                .getServer()
-                                                .createBlockData("minecraft:repeater[delay=" + i + ",locked=true]")
-                                        )
-                                    );
+                                commit.accept(
+                                    new BukkitBlockData(
+                                        "minecraft:repeater[delay=" + i + ",locked=false]",
+                                        Bukkit
+                                            .getServer()
+                                            .createBlockData("minecraft:repeater[delay=" + i + ",locked=false]")
+                                    )
+                                );
+                                commit.accept(
+                                    new BukkitBlockData(
+                                        "minecraft:repeater[delay=" + i + ",locked=true]",
+                                        Bukkit
+                                            .getServer()
+                                            .createBlockData("minecraft:repeater[delay=" + i + ",locked=true]")
+                                    )
+                                );
                             }
                         }
-                    }
-                );
-            this.put(
-                    Material.COMPARATOR.getKey(),
-                    new HashSet<BukkitBlockData>() {
-                        {
-                            for (Comparator.Mode mode : Comparator.Mode.values()) {
-                                this.add(
-                                        new BukkitBlockData(
-                                            "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
-                                            Bukkit
-                                                .getServer()
-                                                .createBlockData(
-                                                    "minecraft:comparator[mode=" +
-                                                    mode.name().toLowerCase(Locale.ROOT) +
-                                                    "]"
-                                                )
-                                        )
-                                    );
-                            }
-                        }
-                    }
-                );
-        }
-    };
+                    )
+                    .collect(Collectors.toSet())
+            ),
+            Map.entry(
+                Material.COMPARATOR.getKey(),
+                Arrays
+                    .stream(Comparator.Mode.values())
+                    .map(
+                        mode ->
+                            new BukkitBlockData(
+                                "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
+                                Bukkit
+                                    .getServer()
+                                    .createBlockData(
+                                        "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]"
+                                    )
+                            )
+                    )
+                    .collect(Collectors.toSet())
+            )
+        )
+    );
 
-    private final Map<NamespacedKey, BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean>> matchers = new ConcurrentHashMap<NamespacedKey, BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean>>() {
-        {
-            this.put(Material.LEVER.getKey(), BukkitBlockDataRegistry::LeverMatcher);
-            this.put(Material.REPEATER.getKey(), BukkitBlockDataRegistry::RepeaterMatcher);
-            this.put(Material.COMPARATOR.getKey(), BukkitBlockDataRegistry::ComparatorMatcher);
-        }
-    };
+    private final Map<NamespacedKey, BiPredicate<org.bukkit.block.data.BlockData, BlockState>> matchers = new ConcurrentHashMap<>(
+        Map.ofEntries(
+            Map.entry(Material.LEVER.getKey(), BukkitBlockDataRegistry::leverMatcher),
+            Map.entry(Material.REPEATER.getKey(), BukkitBlockDataRegistry::repeaterMatcher),
+            Map.entry(Material.COMPARATOR.getKey(), BukkitBlockDataRegistry::comparatorMatcher)
+        )
+    );
 
     public static BukkitBlockDataRegistry getInstance() {
         return BukkitBlockDataRegistry.instance;
@@ -119,26 +114,26 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
         BlockState blockState = block.getBlockState();
         NamespacedKey id = blockState.getBlockData().getMaterial().getKey();
         Collection<BukkitBlockData> knownStates = registry.get(id);
-        BiFunction<org.bukkit.block.data.BlockData, BlockState, Boolean> matcher = matchers.get(id);
+        BiPredicate<org.bukkit.block.data.BlockData, BlockState> matcher = matchers.get(id);
         if (Objects.isNull(knownStates)) {
             return null;
         }
         for (BukkitBlockData knownState : knownStates) {
             org.bukkit.block.data.BlockData data = knownState.getBlockData();
-            if (matcher.apply(data, blockState)) {
+            if (matcher.test(data, blockState)) {
                 return knownState;
             }
         }
         return null;
     }
 
-    public static Boolean LeverMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
+    public static Boolean leverMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
         Switch lever = (Switch) current;
         Switch expectedLever = (Switch) expected.getBlockData();
         return expectedLever.isPowered() == lever.isPowered();
     }
 
-    public static Boolean RepeaterMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
+    public static Boolean repeaterMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
         Repeater repeater = (Repeater) current;
         Repeater expectedRepeater = (Repeater) expected.getBlockData();
         return (
@@ -146,7 +141,7 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
         );
     }
 
-    public static Boolean ComparatorMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
+    public static Boolean comparatorMatcher(org.bukkit.block.data.BlockData current, BlockState expected) {
         Comparator comparator = (Comparator) current;
         Comparator expectedComparator = (Comparator) expected.getBlockData();
         return (expectedComparator.getMode() == comparator.getMode());

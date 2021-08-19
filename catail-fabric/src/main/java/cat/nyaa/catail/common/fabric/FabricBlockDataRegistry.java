@@ -7,11 +7,12 @@ import cat.nyaa.catail.common.BlockData;
 import cat.nyaa.catail.common.BlockDataRegistry;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.RepeaterBlock;
-import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -19,91 +20,72 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
 
     private static final FabricBlockDataRegistry instance = new FabricBlockDataRegistry();
 
-    private final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<>() {
-        {
-            this.put(
-                    Registry.BLOCK.getId(LEVER),
-                    new HashSet<>() {
-                        {
-                            this.add(
-                                    new FabricBlockData(
-                                        "minecraft:lever[powered=true]",
-                                        LEVER.getDefaultState(),
-                                        blockState -> blockState.with(LeverBlock.POWERED, true),
-                                        Collections.singleton(LeverBlock.POWERED)
-                                    )
-                                );
-                            this.add(
-                                    new FabricBlockData(
-                                        "minecraft:lever[powered=false]",
-                                        LEVER.getDefaultState(),
-                                        blockState -> blockState.with(LeverBlock.POWERED, false),
-                                        Collections.singleton(LeverBlock.POWERED)
-                                    )
-                                );
+    private final Map<Identifier, Collection<FabricBlockData>> registry = new ConcurrentHashMap<>(
+        Map.ofEntries(
+            Map.entry(
+                Registry.BLOCK.getId(LEVER),
+                Set.of(
+                    new FabricBlockData(
+                        "minecraft:lever[powered=true]",
+                        LEVER.getDefaultState(),
+                        blockState -> blockState.with(LeverBlock.POWERED, true),
+                        Collections.singleton(LeverBlock.POWERED)
+                    ),
+                    new FabricBlockData(
+                        "minecraft:lever[powered=false]",
+                        LEVER.getDefaultState(),
+                        blockState -> blockState.with(LeverBlock.POWERED, false),
+                        Collections.singleton(LeverBlock.POWERED)
+                    )
+                )
+            ),
+            Map.entry(
+                Registry.BLOCK.getId(REPEATER),
+                RepeaterBlock.DELAY
+                    .getValues()
+                    .stream()
+                    .mapMulti(
+                        (Integer delay, Consumer<FabricBlockData> commit) -> {
+                            commit.accept(
+                                new FabricBlockData(
+                                    "minecraft:repeater[delay=" + delay + ",locked=false]",
+                                    REPEATER.getDefaultState(),
+                                    blockState ->
+                                        blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, false),
+                                    Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
+                                )
+                            );
+                            commit.accept(
+                                new FabricBlockData(
+                                    "minecraft:repeater[delay=" + delay + ",locked=true]",
+                                    REPEATER.getDefaultState(),
+                                    blockState ->
+                                        blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, true),
+                                    Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
+                                )
+                            );
                         }
-                    }
-                );
-            this.put(
-                    Registry.BLOCK.getId(REPEATER),
-                    new HashSet<>() {
-                        {
-                            for (int delay : RepeaterBlock.DELAY.getValues()) {
-                                this.add(
-                                        new FabricBlockData(
-                                            "minecraft:repeater[delay=" + delay + ",locked=false]",
-                                            REPEATER.getDefaultState(),
-                                            blockState ->
-                                                blockState
-                                                    .with(RepeaterBlock.DELAY, delay)
-                                                    .with(RepeaterBlock.LOCKED, false),
-                                            new HashSet<>() {
-                                                {
-                                                    this.add(RepeaterBlock.DELAY);
-                                                    this.add(RepeaterBlock.LOCKED);
-                                                }
-                                            }
-                                        )
-                                    );
-                                this.add(
-                                        new FabricBlockData(
-                                            "minecraft:repeater[delay=" + delay + ",locked=true]",
-                                            REPEATER.getDefaultState(),
-                                            blockState ->
-                                                blockState
-                                                    .with(RepeaterBlock.DELAY, delay)
-                                                    .with(RepeaterBlock.LOCKED, true),
-                                            new HashSet<>() {
-                                                {
-                                                    this.add(RepeaterBlock.DELAY);
-                                                    this.add(RepeaterBlock.LOCKED);
-                                                }
-                                            }
-                                        )
-                                    );
-                            }
-                        }
-                    }
-                );
-            this.put(
-                    Registry.BLOCK.getId(COMPARATOR),
-                    new HashSet<>() {
-                        {
-                            for (ComparatorMode mode : ComparatorBlock.MODE.getValues()) {
-                                this.add(
-                                        new FabricBlockData(
-                                            "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
-                                            COMPARATOR.getDefaultState(),
-                                            blockState -> blockState.with(ComparatorBlock.MODE, mode),
-                                            Collections.singleton(ComparatorBlock.MODE)
-                                        )
-                                    );
-                            }
-                        }
-                    }
-                );
-        }
-    };
+                    )
+                    .collect(Collectors.toSet())
+            ),
+            Map.entry(
+                Registry.BLOCK.getId(COMPARATOR),
+                ComparatorBlock.MODE
+                    .getValues()
+                    .stream()
+                    .map(
+                        mode ->
+                            new FabricBlockData(
+                                "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
+                                COMPARATOR.getDefaultState(),
+                                blockState -> blockState.with(ComparatorBlock.MODE, mode),
+                                Collections.singleton(ComparatorBlock.MODE)
+                            )
+                    )
+                    .collect(Collectors.toSet())
+            )
+        )
+    );
 
     public static FabricBlockDataRegistry getInstance() {
         return FabricBlockDataRegistry.instance;

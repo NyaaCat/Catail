@@ -29,7 +29,7 @@ public final class MainSpigot extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        getLogger().log(Level.INFO, event.toString());
+        getLogger().log(Level.INFO, event::toString);
         Block clickedBlock = event.getClickedBlock();
         BukkitBlockDataRegistry instance = BukkitBlockDataRegistry.getInstance();
         if (Objects.isNull(clickedBlock)) return;
