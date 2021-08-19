@@ -22,14 +22,19 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.PositionImpl;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.level.ServerWorldProperties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MainFabric implements ModInitializer {
 
+    private final Logger logger = LogManager.getLogger();
+
     @Override
     public void onInitialize() {
-        System.out.println("Catail onInitialize");
+        logger.info("Catail onInitialize");
         ServerWorldEvents.LOAD.register(
             (s, w) -> {
+                if (w.isClient) return;
                 LocaleFallback localeFallback = new CommonLocaleFallback(
                     Locale.SIMPLIFIED_CHINESE,
                     Collections.emptyMap()
@@ -70,10 +75,8 @@ public class MainFabric implements ModInitializer {
                 );
                 PlayerBlockBreakEvents.AFTER.register(
                     (world, player, pos, state, entity) -> {
-                        if (world.equals(w)) {
-                            if (area.isInArea(FabricLocation.get(pos))) {
-                                player.sendMessage(new LiteralText(area.getName(Locale.TRADITIONAL_CHINESE)), true);
-                            }
+                        if (world.equals(w) && area.isInArea(FabricLocation.get(pos))) {
+                            player.sendMessage(new LiteralText(area.getName(Locale.TRADITIONAL_CHINESE)), true);
                         }
                     }
                 );
@@ -82,6 +85,7 @@ public class MainFabric implements ModInitializer {
 
         AttackBlockCallback.EVENT.register(
             (player, world, hand, pos, direction) -> {
+                if (world.isClient) return ActionResult.PASS;
                 FabricBlock fabricBlock = FabricBlock.get(world, pos);
                 BlockData state = fabricBlock.getState();
                 if (Objects.isNull(state)) {
@@ -89,13 +93,13 @@ public class MainFabric implements ModInitializer {
                 }
                 FabricBlockType blockType = ((FabricBlockType) state.getBlockType());
                 if (blockType.getBlock().equals(LEVER)) {
-                    System.out.println("Catail lever!");
+                    logger.info("Catail lever!");
                     BlockData data = FabricBlockDataRegistry
                         .getInstance()
                         .get(FabricIdentifier.get(Registry.BLOCK.getId(LEVER)), "minecraft:lever[powered=false]");
-                    System.out.println(data);
+                    logger.info(data);
                     if (Objects.nonNull(data)) {
-                        System.out.println(data.getAsString());
+                        logger.warn(data.getAsString());
                         fabricBlock.setState(data);
                     }
                 }
