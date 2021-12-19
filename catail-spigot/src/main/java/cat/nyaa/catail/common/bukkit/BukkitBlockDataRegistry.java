@@ -41,44 +41,41 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 Material.REPEATER.getKey(),
                 Stream
                     .of((Repeater) Bukkit.getServer().createBlockData(Material.REPEATER))
-                    .mapMulti(
-                        (Repeater repeaterData, Consumer<BukkitBlockData> commit) -> {
-                            for (int i = repeaterData.getMinimumDelay(); i <= repeaterData.getMaximumDelay(); i++) {
-                                commit.accept(
-                                    new BukkitBlockData(
-                                        "minecraft:repeater[delay=" + i + ",locked=false]",
-                                        Bukkit
-                                            .getServer()
-                                            .createBlockData("minecraft:repeater[delay=" + i + ",locked=false]")
-                                    )
-                                );
-                                commit.accept(
-                                    new BukkitBlockData(
-                                        "minecraft:repeater[delay=" + i + ",locked=true]",
-                                        Bukkit
-                                            .getServer()
-                                            .createBlockData("minecraft:repeater[delay=" + i + ",locked=true]")
-                                    )
-                                );
-                            }
+                    .mapMulti((Repeater repeaterData, Consumer<BukkitBlockData> commit) -> {
+                        for (int i = repeaterData.getMinimumDelay(); i <= repeaterData.getMaximumDelay(); i++) {
+                            commit.accept(
+                                new BukkitBlockData(
+                                    "minecraft:repeater[delay=" + i + ",locked=false]",
+                                    Bukkit
+                                        .getServer()
+                                        .createBlockData("minecraft:repeater[delay=" + i + ",locked=false]")
+                                )
+                            );
+                            commit.accept(
+                                new BukkitBlockData(
+                                    "minecraft:repeater[delay=" + i + ",locked=true]",
+                                    Bukkit
+                                        .getServer()
+                                        .createBlockData("minecraft:repeater[delay=" + i + ",locked=true]")
+                                )
+                            );
                         }
-                    )
+                    })
                     .collect(Collectors.toSet())
             ),
             Map.entry(
                 Material.COMPARATOR.getKey(),
                 Arrays
                     .stream(Comparator.Mode.values())
-                    .map(
-                        mode ->
-                            new BukkitBlockData(
-                                "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
-                                Bukkit
-                                    .getServer()
-                                    .createBlockData(
-                                        "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]"
-                                    )
-                            )
+                    .map(mode ->
+                        new BukkitBlockData(
+                            "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
+                            Bukkit
+                                .getServer()
+                                .createBlockData(
+                                    "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]"
+                                )
+                        )
                     )
                     .collect(Collectors.toSet())
             )

@@ -44,28 +44,26 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 RepeaterBlock.DELAY
                     .getValues()
                     .stream()
-                    .mapMulti(
-                        (Integer delay, Consumer<FabricBlockData> commit) -> {
-                            commit.accept(
-                                new FabricBlockData(
-                                    "minecraft:repeater[delay=" + delay + ",locked=false]",
-                                    REPEATER.getDefaultState(),
-                                    blockState ->
-                                        blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, false),
-                                    Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
-                                )
-                            );
-                            commit.accept(
-                                new FabricBlockData(
-                                    "minecraft:repeater[delay=" + delay + ",locked=true]",
-                                    REPEATER.getDefaultState(),
-                                    blockState ->
-                                        blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, true),
-                                    Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
-                                )
-                            );
-                        }
-                    )
+                    .mapMulti((Integer delay, Consumer<FabricBlockData> commit) -> {
+                        commit.accept(
+                            new FabricBlockData(
+                                "minecraft:repeater[delay=" + delay + ",locked=false]",
+                                REPEATER.getDefaultState(),
+                                blockState ->
+                                    blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, false),
+                                Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
+                            )
+                        );
+                        commit.accept(
+                            new FabricBlockData(
+                                "minecraft:repeater[delay=" + delay + ",locked=true]",
+                                REPEATER.getDefaultState(),
+                                blockState ->
+                                    blockState.with(RepeaterBlock.DELAY, delay).with(RepeaterBlock.LOCKED, true),
+                                Set.of(RepeaterBlock.DELAY, RepeaterBlock.LOCKED)
+                            )
+                        );
+                    })
                     .collect(Collectors.toSet())
             ),
             Map.entry(
@@ -73,14 +71,13 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 ComparatorBlock.MODE
                     .getValues()
                     .stream()
-                    .map(
-                        mode ->
-                            new FabricBlockData(
-                                "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
-                                COMPARATOR.getDefaultState(),
-                                blockState -> blockState.with(ComparatorBlock.MODE, mode),
-                                Collections.singleton(ComparatorBlock.MODE)
-                            )
+                    .map(mode ->
+                        new FabricBlockData(
+                            "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
+                            COMPARATOR.getDefaultState(),
+                            blockState -> blockState.with(ComparatorBlock.MODE, mode),
+                            Collections.singleton(ComparatorBlock.MODE)
+                        )
                     )
                     .collect(Collectors.toSet())
             )
@@ -117,10 +114,9 @@ public class FabricBlockDataRegistry implements BlockDataRegistry {
                 knownState
                     .getProperties()
                     .stream()
-                    .allMatch(
-                        property ->
-                            Objects.nonNull(blockState.get(property)) &&
-                            blockState.get(property).equals(state.get(property))
+                    .allMatch(property ->
+                        Objects.nonNull(blockState.get(property)) &&
+                        blockState.get(property).equals(state.get(property))
                     )
             ) {
                 return knownState;

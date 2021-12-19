@@ -27,6 +27,7 @@ dependencies {
     // But depends on selected package when compiling
     Set<String> apiModules = [
             "fabric-api-base",
+            "fabric-command-api-v1",
             "fabric-events-interaction-v0",
             "fabric-lifecycle-events-v1",
     ]
@@ -41,6 +42,7 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    exclude '**/*.gitkeep'
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
