@@ -2,7 +2,9 @@ package cat.nyaa.catail.common.fabric;
 
 import cat.nyaa.catail.common.Identifier;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class FabricIdentifier implements Identifier {
 
@@ -22,6 +24,14 @@ public class FabricIdentifier implements Identifier {
         this.identifier = identifier;
     }
 
+    public static String dumpCache() {
+        return cache
+            .entrySet()
+            .stream()
+            .map(i -> i.getKey().toString() + " -> " + i.getValue().toString())
+            .collect(Collectors.joining("\n"));
+    }
+
     public net.minecraft.util.Identifier getIdentifier() {
         return this.identifier;
     }
@@ -34,5 +44,22 @@ public class FabricIdentifier implements Identifier {
     @Override
     public String getKey() {
         return identifier.getPath();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (Objects.isNull(obj)) {
+            return false;
+        }
+        if (Identifier.class.isAssignableFrom(obj.getClass())) {
+            Identifier objId = (Identifier) obj;
+            return objId.getKey().equals(getKey()) && objId.getNamespace().equals(getNamespace());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
     }
 }

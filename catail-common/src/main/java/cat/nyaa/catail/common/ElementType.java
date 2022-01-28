@@ -1,5 +1,6 @@
 package cat.nyaa.catail.common;
 
-public interface BlockType {
+public interface ElementType<T> {
     Identifier getIdentifier();
+    Class<T> getBaseType();
 }

@@ -1,7 +1,7 @@
 package cat.nyaa.catail.common;
 
-public interface BlockData {
-    BlockType getBlockType();
+public interface ElementData<T> {
+    ElementType<T> getElementType();
 
     String getStateName();
 

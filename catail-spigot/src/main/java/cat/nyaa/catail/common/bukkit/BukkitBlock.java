@@ -1,12 +1,12 @@
 package cat.nyaa.catail.common.bukkit;
 
-import cat.nyaa.catail.common.Block;
-import cat.nyaa.catail.common.BlockData;
+import cat.nyaa.catail.common.Element;
+import cat.nyaa.catail.common.ElementData;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.block.BlockState;
 
-public class BukkitBlock implements Block {
+public class BukkitBlock implements Element {
 
     private static final Map<org.bukkit.block.Block, BukkitBlock> cache = new ConcurrentHashMap<>();
 
@@ -21,7 +21,7 @@ public class BukkitBlock implements Block {
     }
 
     @Override
-    public BlockData getState() {
+    public ElementData getState() {
         throw new IllegalStateException();
     }
 
@@ -41,8 +41,8 @@ public class BukkitBlock implements Block {
     }
 
     @Override
-    public void setState(BlockData state) {
-        block.setBlockData(block.getBlockData().merge(((BukkitBlockData) state).getBlockData()));
+    public void setState(ElementData state) {
+        block.setBlockData(block.getBlockData().merge(((BukkitElementData) state).getBlockData()));
     }
 
     public BlockState getBlockState() {

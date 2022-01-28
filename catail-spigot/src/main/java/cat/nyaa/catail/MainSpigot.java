@@ -1,8 +1,8 @@
 package cat.nyaa.catail;
 
-import cat.nyaa.catail.common.BlockData;
+import cat.nyaa.catail.common.ElementData;
 import cat.nyaa.catail.common.bukkit.BukkitBlock;
-import cat.nyaa.catail.common.bukkit.BukkitBlockDataRegistry;
+import cat.nyaa.catail.common.bukkit.BukkitElementDataRegistry;
 import cat.nyaa.catail.common.bukkit.BukkitIdentifier;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -31,17 +31,17 @@ public final class MainSpigot extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         getLogger().log(Level.INFO, event::toString);
         Block clickedBlock = event.getClickedBlock();
-        BukkitBlockDataRegistry instance = BukkitBlockDataRegistry.getInstance();
+        BukkitElementDataRegistry instance = BukkitElementDataRegistry.getInstance();
         if (Objects.isNull(clickedBlock)) return;
         BukkitBlock bukkitBlock = BukkitBlock.get(clickedBlock);
-        BlockData blockData = instance.match(bukkitBlock);
-        getLogger().log(Level.INFO, Objects.toString(blockData));
-        if (Objects.nonNull(blockData)) {
-            getLogger().log(Level.INFO, blockData.getStateName());
-            getLogger().log(Level.INFO, blockData.getAsString());
+        ElementData elementData = instance.match(bukkitBlock);
+        getLogger().log(Level.INFO, Objects.toString(elementData));
+        if (Objects.nonNull(elementData)) {
+            getLogger().log(Level.INFO, elementData.getStateName());
+            getLogger().log(Level.INFO, elementData.getAsString());
         }
         if (clickedBlock.getBlockData().getMaterial().equals(Material.LEVER)) {
-            BlockData data = instance.get(
+            ElementData data = instance.get(
                 BukkitIdentifier.get(Material.LEVER.getKey()),
                 "minecraft:lever[powered=false]"
             );

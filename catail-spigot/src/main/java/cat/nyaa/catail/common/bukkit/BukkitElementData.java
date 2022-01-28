@@ -1,21 +1,21 @@
 package cat.nyaa.catail.common.bukkit;
 
-import cat.nyaa.catail.common.BlockData;
-import cat.nyaa.catail.common.BlockType;
+import cat.nyaa.catail.common.ElementData;
+import cat.nyaa.catail.common.ElementType;
 
-public class BukkitBlockData implements BlockData {
+public class BukkitElementData implements ElementData {
 
     private final org.bukkit.block.data.BlockData blockData;
     private final String name;
 
-    public BukkitBlockData(String name, org.bukkit.block.data.BlockData blockData) {
+    public BukkitElementData(String name, org.bukkit.block.data.BlockData blockData) {
         this.blockData = blockData;
         this.name = name;
     }
 
     @Override
-    public BlockType getBlockType() {
-        return BukkitBlockType.get(blockData.getMaterial());
+    public ElementType getElementType() {
+        return BukkitElementType.get(blockData.getMaterial());
     }
 
     @Override

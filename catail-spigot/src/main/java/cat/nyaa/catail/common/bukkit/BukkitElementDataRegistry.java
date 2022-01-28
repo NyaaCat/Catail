@@ -1,8 +1,8 @@
 package cat.nyaa.catail.common.bukkit;
 
-import cat.nyaa.catail.common.Block;
-import cat.nyaa.catail.common.BlockData;
-import cat.nyaa.catail.common.BlockDataRegistry;
+import cat.nyaa.catail.common.Element;
+import cat.nyaa.catail.common.ElementData;
+import cat.nyaa.catail.common.ElementDataRegistry;
 import cat.nyaa.catail.common.Identifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,20 +18,20 @@ import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Repeater;
 import org.bukkit.block.data.type.Switch;
 
-public class BukkitBlockDataRegistry implements BlockDataRegistry {
+public class BukkitElementDataRegistry implements ElementDataRegistry {
 
-    private static final BukkitBlockDataRegistry instance = new BukkitBlockDataRegistry();
+    private static final BukkitElementDataRegistry instance = new BukkitElementDataRegistry();
 
-    private final Map<NamespacedKey, Collection<BukkitBlockData>> registry = new ConcurrentHashMap<>(
+    private final Map<NamespacedKey, Collection<BukkitElementData>> registry = new ConcurrentHashMap<>(
         Map.ofEntries(
             Map.entry(
                 Material.LEVER.getKey(),
                 Set.of(
-                    new BukkitBlockData(
+                    new BukkitElementData(
                         "minecraft:lever[powered=true]",
                         Bukkit.getServer().createBlockData("minecraft:lever[powered=true]")
                     ),
-                    new BukkitBlockData(
+                    new BukkitElementData(
                         "minecraft:lever[powered=false]",
                         Bukkit.getServer().createBlockData("minecraft:lever[powered=false]")
                     )
@@ -41,10 +41,10 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 Material.REPEATER.getKey(),
                 Stream
                     .of((Repeater) Bukkit.getServer().createBlockData(Material.REPEATER))
-                    .mapMulti((Repeater repeaterData, Consumer<BukkitBlockData> commit) -> {
+                    .mapMulti((Repeater repeaterData, Consumer<BukkitElementData> commit) -> {
                         for (int i = repeaterData.getMinimumDelay(); i <= repeaterData.getMaximumDelay(); i++) {
                             commit.accept(
-                                new BukkitBlockData(
+                                new BukkitElementData(
                                     "minecraft:repeater[delay=" + i + ",locked=false]",
                                     Bukkit
                                         .getServer()
@@ -52,7 +52,7 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                                 )
                             );
                             commit.accept(
-                                new BukkitBlockData(
+                                new BukkitElementData(
                                     "minecraft:repeater[delay=" + i + ",locked=true]",
                                     Bukkit
                                         .getServer()
@@ -68,7 +68,7 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
                 Arrays
                     .stream(Comparator.Mode.values())
                     .map(mode ->
-                        new BukkitBlockData(
+                        new BukkitElementData(
                             "minecraft:comparator[mode=" + mode.name().toLowerCase(Locale.ROOT) + "]",
                             Bukkit
                                 .getServer()
@@ -84,21 +84,21 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
 
     private final Map<NamespacedKey, BiPredicate<org.bukkit.block.data.BlockData, BlockState>> matchers = new ConcurrentHashMap<>(
         Map.ofEntries(
-            Map.entry(Material.LEVER.getKey(), BukkitBlockDataRegistry::leverMatcher),
-            Map.entry(Material.REPEATER.getKey(), BukkitBlockDataRegistry::repeaterMatcher),
-            Map.entry(Material.COMPARATOR.getKey(), BukkitBlockDataRegistry::comparatorMatcher)
+            Map.entry(Material.LEVER.getKey(), BukkitElementDataRegistry::leverMatcher),
+            Map.entry(Material.REPEATER.getKey(), BukkitElementDataRegistry::repeaterMatcher),
+            Map.entry(Material.COMPARATOR.getKey(), BukkitElementDataRegistry::comparatorMatcher)
         )
     );
 
-    public static BukkitBlockDataRegistry getInstance() {
-        return BukkitBlockDataRegistry.instance;
+    public static BukkitElementDataRegistry getInstance() {
+        return BukkitElementDataRegistry.instance;
     }
 
-    protected BukkitBlockDataRegistry() {}
+    protected BukkitElementDataRegistry() {}
 
     @Override
-    public BlockData get(Identifier key, String name) {
-        Collection<BukkitBlockData> blockData = registry.get(((BukkitIdentifier) key).getNamespacedKey());
+    public ElementData get(Identifier key, String name) {
+        Collection<BukkitElementData> blockData = registry.get(((BukkitIdentifier) key).getNamespacedKey());
         if (Objects.isNull(blockData)) {
             return null;
         }
@@ -106,16 +106,16 @@ public class BukkitBlockDataRegistry implements BlockDataRegistry {
     }
 
     @Override
-    public BlockData match(Block commonBlock) {
+    public ElementData match(Element commonBlock) {
         BukkitBlock block = (BukkitBlock) commonBlock;
         BlockState blockState = block.getBlockState();
         NamespacedKey id = blockState.getBlockData().getMaterial().getKey();
-        Collection<BukkitBlockData> knownStates = registry.get(id);
+        Collection<BukkitElementData> knownStates = registry.get(id);
         BiPredicate<org.bukkit.block.data.BlockData, BlockState> matcher = matchers.get(id);
         if (Objects.isNull(knownStates)) {
             return null;
         }
-        for (BukkitBlockData knownState : knownStates) {
+        for (BukkitElementData knownState : knownStates) {
             org.bukkit.block.data.BlockData data = knownState.getBlockData();
             if (matcher.test(data, blockState)) {
                 return knownState;

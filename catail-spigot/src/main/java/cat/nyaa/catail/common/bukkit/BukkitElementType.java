@@ -1,22 +1,22 @@
 package cat.nyaa.catail.common.bukkit;
 
-import cat.nyaa.catail.common.BlockType;
+import cat.nyaa.catail.common.ElementType;
 import cat.nyaa.catail.common.Identifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Material;
 
-public class BukkitBlockType implements BlockType {
+public class BukkitElementType implements ElementType {
 
-    private static final Map<Material, BukkitBlockType> cache = new ConcurrentHashMap<>();
+    private static final Map<Material, BukkitElementType> cache = new ConcurrentHashMap<>();
 
-    public static BukkitBlockType get(Material material) {
-        return cache.computeIfAbsent(material, BukkitBlockType::new);
+    public static BukkitElementType get(Material material) {
+        return cache.computeIfAbsent(material, BukkitElementType::new);
     }
 
     private final Material material;
 
-    protected BukkitBlockType(Material material) {
+    protected BukkitElementType(Material material) {
         this.material = material;
     }
 

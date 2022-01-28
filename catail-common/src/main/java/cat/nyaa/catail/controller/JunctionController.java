@@ -1,6 +1,6 @@
 package cat.nyaa.catail.controller;
 
-import cat.nyaa.catail.common.BlockGroupState;
+import cat.nyaa.catail.common.ElementDataGroup;
 import cat.nyaa.catail.common.Junctions;
 import cat.nyaa.catail.common.Player;
 import cat.nyaa.catail.common.Route;
@@ -19,11 +19,11 @@ public class JunctionController {
     }
 
     public void setJunctionState(Junctions junction, String state) {
-        BlockGroupState blockGroupState = junction.getJunctionStates().get(state);
-        if (Objects.isNull(blockGroupState)) {
+        ElementDataGroup elementDataGroup = junction.getJunctionStates().get(state);
+        if (Objects.isNull(elementDataGroup)) {
             throw new IllegalStateException(String.format("State %s not found in %s", state, junction.getId()));
         }
-        blockGroupState.applyAllBlockState();
+        elementDataGroup.applyAllBlockState();
     }
 
     public void setJunctionStateByRoute(Junctions junction, Route route) {

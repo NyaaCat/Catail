@@ -2,11 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "cat.nyaa.catail.fabric.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "ServerWorldMixin"
   ],
   "client": [
+  ],
+  "server": [
   ],
   "injectors": {
     "defaultRequire": 1
